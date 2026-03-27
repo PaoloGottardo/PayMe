@@ -21,8 +21,10 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
+    "@privy-io/react-auth": "^3.18.0",
     "@solana/client": "^1.2.0",
     "@solana/react-hooks": "^1.1.5",
+    "@solana/sysvars": "^6.5.0",
     "next": "16.1.5",
     "react": "19.2.3",
     "react-dom": "19.2.3",
