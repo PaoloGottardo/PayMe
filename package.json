@@ -22,6 +22,7 @@
   "private": true,
   "dependencies": {
     "@privy-io/react-auth": "^3.18.0",
+    "@solana-program/memo": "^0.11.0",
     "@solana/client": "^1.2.0",
     "@solana/react-hooks": "^1.1.5",
     "@solana/sysvars": "^6.5.0",
