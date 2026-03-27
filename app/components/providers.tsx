@@ -18,7 +18,9 @@ export function Providers({ children }: PropsWithChildren) {
         // Configurazione per far apparire i wallet su mobile
         externalWallets: {
           solana: {
-            connectors: toSolanaWalletConnectors(),
+            connectors: toSolanaWalletConnectors({
+              shouldAutoConnect: true,
+            }),
           },
         },
       }}
