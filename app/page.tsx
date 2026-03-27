@@ -6,8 +6,10 @@ import { usePrivy, useWallets } from "@privy-io/react-auth";
 export default function Page() {
   const { ready, authenticated, login, logout } = usePrivy();
   const { wallets } = useWallets();
-  const [isBusy, setIsBusy] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const isBusy = isLoggingIn || isLoggingOut;
 
   const walletAddress = useMemo(() => {
     if (!wallets.length) return null;
@@ -17,26 +19,36 @@ export default function Page() {
   }, [wallets]);
 
   const handleLogin = async () => {
+    if (!ready || authenticated || isBusy) return;
     try {
       setErrorMessage(null);
-      setIsBusy(true);
+      setIsLoggingIn(true);
       await login();
-    } catch {
-      setErrorMessage("Login non riuscito. Riprova.");
+    } catch (error) {
+      const message =
+        error instanceof Error && error.message
+          ? `Login non riuscito: ${error.message}`
+          : "Login non riuscito. Riprova.";
+      setErrorMessage(message);
     } finally {
-      setIsBusy(false);
+      setIsLoggingIn(false);
     }
   };
 
   const handleLogout = async () => {
+    if (!authenticated || isBusy) return;
     try {
       setErrorMessage(null);
-      setIsBusy(true);
+      setIsLoggingOut(true);
       await logout();
-    } catch {
-      setErrorMessage("Logout non riuscito. Riprova.");
+    } catch (error) {
+      const message =
+        error instanceof Error && error.message
+          ? `Logout non riuscito: ${error.message}`
+          : "Logout non riuscito. Riprova.";
+      setErrorMessage(message);
     } finally {
-      setIsBusy(false);
+      setIsLoggingOut(false);
     }
   };
 
@@ -56,7 +68,7 @@ export default function Page() {
           disabled={!ready || isBusy}
           className="rounded-lg bg-[#676FFF] px-6 py-3 text-base font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Connetti Wallet (MetaMask o Phantom)
+          {isLoggingIn ? "Connessione..." : "Connetti Wallet (MetaMask o Phantom)"}
         </button>
       ) : (
         <div className="flex flex-col items-center gap-3">
@@ -71,7 +83,7 @@ export default function Page() {
             disabled={isBusy}
             className="rounded-lg border border-gray-600 px-4 py-2 text-sm text-white transition hover:bg-gray-800"
           >
-            Disconnetti
+            {isLoggingOut ? "Disconnessione..." : "Disconnetti"}
           </button>
         </div>
       )}
